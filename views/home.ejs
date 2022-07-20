@@ -1,0 +1,27 @@
+<!-- <link rel="stylesheet" href="/css/home.css"> -->
+
+<div id="home-container">
+    <section id="feed-posts">
+            <h4>FAQs</h4>
+            <% if(locals.user){ %>
+            <form action="/question/create" id="new-post-form" method="POST">
+                <textarea name="title" cols="30" rows="3" placeholder="Type query..." required></textarea>
+                <textarea name="tags" cols="30" rows="3" placeholder="add tags" required></textarea>
+                <input type="submit" value="Post">
+            </form>
+            <% } %>
+        
+            <div id="posts-list-container">
+                <ul>
+                    <% for(ques of question){ %>
+                        
+                    <%- include('_question') -%>
+                        
+                    <%} %>
+                </ul>
+            </div>
+        </section>
+</div>
+<script src="/js/home_posts.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.3.0/socket.io.js" integrity="sha512-v8ng/uGxkge3d1IJuEo6dJP8JViyvms0cly9pnbfRxT6/31c3dRWxIiwGnMSWwZjHKOuY3EVmijs7k1jz/9bLA==" crossorigin="anonymous">
+</script>
