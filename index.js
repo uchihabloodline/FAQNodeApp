@@ -19,7 +19,7 @@ app.set('views','./views');
 //db connect
 app.use(session({
     name: 'FaqApp',
-    //TODO--> need to change secret before deployment
+    //TODO--> need to change secret if deployment
     secret: 'anything',
     saveUninitialized: false,
     resave: false,

@@ -36,12 +36,19 @@
             display: block;
         }
     </style>
+    <div id="header-container">
+        <button class="mb-3" href="/user/login" class="btn success">Sign-In</button> <br>
+        <button class="mb-3" href="/user/create" class="btn success">Sign-Up</button>
+    </div>
 </head>
 
 <body style="margin: 0">
     <div style="margin-left:10px;margin-right:10px;">
         <div id="accordion_search_bar_container">
             <input type="search" id="accordion_search_bar" placeholder="Search" />
+        </div>
+        <div id="query-container">
+            <button class="mb-6" href="/question/create" class="btn success">Add query</button>
         </div>
         <div style="display: flex;flex-wrap: nowrap;overflow-x: auto;">
             <ul class="nav nav-tabs" id="myTab" role="tablist" style="flex: 0 0 auto;">
@@ -88,6 +95,10 @@
                 <% }) %>
             </div>
         </div>
+    </div>
+    <div>
+        <h3>Tags:</h3>
+        
     </div>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js"></script>
