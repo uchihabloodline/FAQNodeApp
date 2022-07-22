@@ -7,10 +7,17 @@ const router = express.Router();
 const session = require('express-session');
 const db = require('./config/mongoose');
 const MongoStore = require('connect-mongo');
+const passport = require("passport");
+const passportLocal = require('./config/passport-local-strategy');
+// const LocalStrategy = require("passport-local");
+// const passportLocalMongoose = require("passport-local-mongoose");
 
 // Middlewares
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
+
+//setting static path for css/js
+app.use(express.static('./assets'));
 
 //setting view engine
 app.set('view engine','ejs');
@@ -38,6 +45,10 @@ app.use(session({
         }
     )
 }));
+
+app.use(passport.initialize());
+app.use(passport.session());
+app.use(passport.setAuthenticatedUser);
 
 // API
 app.use('/', require('./routes/index'));
