@@ -26,10 +26,11 @@ module.exports.createSession = function(req,res){
 
 //sign-out
 module.exports.destroySession = function(req, res){
-    req.logout();
-    console.log('success','You have logged out');
-
-    return res.redirect('/');
+    req.logout(function(err) {
+        if (err) { return next(err); }
+        console.log('success','You have logged out');
+        return res.redirect('/');
+      });
 };
 
 //For Sign-Up user
@@ -47,11 +48,11 @@ module.exports.create = function(req,res){
         if(!user){
             User.create(req.body,function(err,user){
                 if(err){
-                    console.log("error in creating the user while signing-up!!");
+                    console.log("error in creating the user while signing-up!!"+err);
                     return;
                 }
             return res.redirect('/user/sign-in');
-            })
+            });
         }else{
             console.log("User already Present!!");
             return res.redirect('back');

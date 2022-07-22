@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-gH2yIJqKdNHPEq0n4Mqa/HGKIhSkIHeL5AyhkYV8i59U5AR6csBvApHHNl/vI1Bx" crossorigin="anonymous">
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-A3rJD856KowSb7dwlZdYEkO39Gagi7vIsF0jrRAoQmDKKtQBHUuLZ9AsSv4jD4Xa" crossorigin="anonymous"></script>
+  <style>
+    
+  </style>
+</head>
+
+<body style="margin: 0">
+
+  <div class="mx-3 pt-1">
+
+    <div id="header-container" class="d-flex justify-content-between align-items-center">
+      <div>
+        <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#askQuestionModal">Ask question</button> <br>
+      </div>
+      <div class="d-flex justify-content-end">
+        <button class="btn btn-primary m-1" href="/user/login">Sign-In</button> <br>
+        <button class="btn btn-outline-primary btn-sm m-1" href="/user/create">Sign-Up</button>
+      </div>
+    </div>
+
+    <div class="modal fade" id="askQuestionModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="askQuestionModalLabel" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="askQuestionModalLabel">Ask your question</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            <textarea class="form-control" rows="4" id="askQuestionModal-question"></textarea>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            <button type="button" class="btn btn-primary" id="askQuestionModal-askButton">Ask</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="modal fade" id="answerQuestionModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="answerQuestionModalLabel" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="answerQuestionLabel">Answer question</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            <textarea class="form-control" rows="4" id="answerQuestionModal-answer"></textarea>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            <button type="button" class="btn btn-primary" id="answerQuestionModal-answerButton">Submit answer</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="d-flex mt-3">
+      <input class="form-control form-control-sm" type="search" placeholder="Search" id="searchInput">
+      <button class="btn btn-outline-secondary ms-1" id="searchButton">Search</button>
+    </div>
+  
+    <div class="accordion accordion-flush mt-3">
+      <% questions.forEach(function(question, index) { %>
+
+        <div class="accordion-item border mb-2">
+          <div class="accordion-header position-relative" id="panelsStayOpen-heading_<%=index%>">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#panelsStayOpen-collapse_<%=index%>" aria-expanded="true" aria-controls="panelsStayOpen-collapse_<%=index%>">
+              <%=question.title%>
+            </button>
+            <div class="position-absolute" style="top: 50%; transform: translateY(-50%); right: 60px; z-index: 1000;">
+              <% question.tags.forEach(function(tag){ %>
+                <span class="badge text-bg-info">
+                  <%=tag%>
+                </span>
+              <% }) %>
+            </div>
+          </div>
+          <div id="panelsStayOpen-collapse_<%=index%>" class="accordion-collapse collapse" aria-labelledby="panelsStayOpen-heading_<%=index%>">
+            <div class="accordion-body">
+              <% if(question.answer) { %>
+                <%=question.answer%>
+              <% } else if(canAnswer) { %>
+                <button type="button" class="btn btn-link" data-bs-toggle="modal" data-bs-target="#answerQuestionModal" data-answer-question-id="<%=question._id%>" data-list-item-answer-button="true">
+                  Answer this question
+                </button>
+              <% } else { %>
+                <span class="text-muted text-opacity-50">This question is not answered yet.</span>
+              <% } %>
+            </div>
+          </div>
+        </div>
+      <% }) %>
+    </div>
+
+  </div>
+
+  <script>
+    // Setup search box
+    (function () {
+      const searchInput = document.getElementById("searchInput");
+      const searchButton = document.getElementById("searchButton");
+
+      searchInput.addEventListener('keypress', function(event) {
+        if (event.key === "Enter") {
+          event.preventDefault();
+          searchButton.click();
+        }
+      });
+
+      searchButton.addEventListener('click', function(event) {
+        window.location.href = '?search=' + searchInput.value;
+      });
+    }());
+
+    // Set search string in search input on load
+    (function () {
+      const searchInput = document.getElementById("searchInput");
+      const urlParams = new URLSearchParams(window.location.search);
+
+      searchInput.value = urlParams.get('search')
+    })();
+
+    // Setup ask question modal
+    (function () {
+      const askQuestionButton = document.getElementById("askQuestionModal-askButton");
+      const questionText = document.getElementById("askQuestionModal-question");
+
+      askQuestionButton.addEventListener('click', function(event) {
+        fetch('/question/create', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            title: questionText.value,
+          })
+        }).then(() => {
+          window.location.reload();
+        });
+      });
+    })();
+
+
+    // Setup answer question modal
+    (function () {
+      const answerQuestionButton = document.getElementById("answerQuestionModal-answerButton");
+      const answerText = document.getElementById("answerQuestionModal-answer");
+
+      let questionId = null;
+
+      document.addEventListener('click', function(event) {
+        if(event.target.dataset.listItemAnswerButton) {
+          questionId = event.target.dataset.answerQuestionId;
+        }
+      });
+
+      answerQuestionButton.addEventListener('click', function(event) {
+        fetch('/question/answer', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            id: questionId,
+            answer: answerText.value,
+          })
+        }).then(() => {
+          window.location.reload();
+        });
+      });
+    })();
+  </script>
+</body>
+
+</html>

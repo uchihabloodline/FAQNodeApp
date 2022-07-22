@@ -5,23 +5,23 @@ const questionSchema = new mongoose.Schema({
         type: String,
         require: true,
     },
-    tags: {
-        type: String,
-        require: true,
-    },
-    user:{
-        type: mongoose.Schema.Types.ObjectId,
-        ref:    'User'
-    },
-    answers:[
+    tags: [
         {
-            type: mongoose.Schema.Types.ObjectId,
-            ref:    'Answer',
-        },
-    ]
+            type: String,
+        }
+    ],
+    user: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User'
+    },
+    answer: {
+        type: String,
+    }
 },{
     timestamps: true
 });
+
+questionSchema.index({title: 'text'});
 
 const Question = mongoose.model('Question',questionSchema); 
 module.exports = Question;
