@@ -11,8 +11,8 @@ router.get('/',homeController.home);
 // router.get('/sign-up',require('./users'));
 // router.get('/sign-in',require('./users'));
 router.use('/user',require('./user'));
-// router.use('/question',require('./question'));
-// router.use('/answer',require('./answer'));
+router.use('/question',require('./question'));
+router.use('/answer',require('./answer'));
 
 // router.use('/api',require('./API'));
 
