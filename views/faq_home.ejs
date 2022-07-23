@@ -20,8 +20,8 @@
         <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#askQuestionModal">Ask question</button> <br>
       </div>
       <div class="d-flex justify-content-end">
-        <button class="btn btn-primary m-1" href="/user/login">Sign-In</button> <br>
-        <button class="btn btn-outline-primary btn-sm m-1" href="/user/create">Sign-Up</button>
+        <button class="btn btn-primary m-1" id="signin-button" onclick="signin()">Sign-In</button> <br>
+        <button class="btn btn-outline-primary btn-sm m-1" id="signup-button" onclick="signup()">Sign-Up</button>
       </div>
     </div>
 
@@ -127,6 +127,15 @@
       searchInput.value = urlParams.get('search')
     })();
 
+    //sign-up and sign-in onclick function for associated buttons
+    function signup() {
+        window.location = '/user/sign-up';
+    }
+
+    function signin() {
+      window.location = '/user/sign-in'
+    }
+    
     // Setup ask question modal
     (function () {
       const askQuestionButton = document.getElementById("askQuestionModal-askButton");
