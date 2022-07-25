@@ -22,10 +22,11 @@
       <div class="d-flex justify-content-end">
         <% if(locals.user){ %>
           <button class="btn btn-primary m-1" id="signout-button" onclick="signout()">Sign-out</button> <br>
-        <% } %>
+        <% }else{ %>
           <button class="btn btn-primary m-1" id="signin-button" onclick="signin()">Sign-In</button> <br>
           <button class="btn btn-outline-primary btn-sm m-1" id="signup-button" onclick="signup()">Sign-Up</button>
-      </div>
+          <%}%>
+        </div>
     </div>
 
     <div class="modal fade" id="askQuestionModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="askQuestionModalLabel" aria-hidden="true">
@@ -92,7 +93,7 @@
             <div class="accordion-body">
               <% if(question.answer) { %>
                 <%=question.answer%>
-              <% } else if(canAnswer) { %>
+              <% } else if(canAnswer && locals.user) { %>
                 <button type="button" class="btn btn-link" data-bs-toggle="modal" data-bs-target="#answerQuestionModal" data-answer-question-id="<%=question._id%>" data-list-item-answer-button="true">
                   Answer this question
                 </button>
@@ -143,7 +144,7 @@
     }
     
     function signout() {
-      window.location = '/user/sign-in'
+      window.location = '/user/sign-out'
     }
 
     // Setup ask question modal

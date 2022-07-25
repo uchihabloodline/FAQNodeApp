@@ -5,6 +5,7 @@ const path = require('path');
 const bodyParser = require('body-parser');
 const router = express.Router();
 const session = require('express-session');
+const cookieParser = require('cookie-parser');
 const db = require('./config/mongoose');
 const MongoStore = require('connect-mongo');
 const passport = require("passport");
@@ -15,6 +16,7 @@ const passportLocal = require('./config/passport-local-strategy');
 // Middlewares
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
+app.use(cookieParser());
 
 //setting static path for css/js
 app.use(express.static('./assets'));
@@ -37,7 +39,7 @@ app.use(session({
         {   
             mongoUrl: "mongodb://localhost/FaqApp",
             mongooseConnection: db,
-            autoRemove: 'disabled'
+            autoRemove: 'disabled',
 
         },
         function(err){
