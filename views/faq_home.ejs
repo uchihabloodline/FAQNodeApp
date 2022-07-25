@@ -36,7 +36,10 @@
             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
           </div>
           <div class="modal-body">
-            <textarea class="form-control" rows="4" id="askQuestionModal-question"></textarea>
+            <textarea class="form-control" rows="4" id="askQuestionModal-question" placeholder="add your question"></textarea>
+          </div>
+          <div class="modal-body">
+            <textarea class="form-control" rows="2" id="askQuestionModal-tag" placeholder="add tags separated by comma"></textarea>
           </div>
           <div class="modal-footer">
             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
@@ -80,7 +83,7 @@
             <div class="position-absolute" style="top: 50%; transform: translateY(-50%); right: 60px; z-index: 1000;">
               <% question.tags.forEach(function(tag){ %>
                 <span class="badge text-bg-info">
-                  <%=tag%>
+                  <%=tag%> <br>
                 </span>
               <% }) %>
             </div>
@@ -142,12 +145,17 @@
     function signout() {
       window.location = '/user/sign-in'
     }
+
     // Setup ask question modal
     (function () {
       const askQuestionButton = document.getElementById("askQuestionModal-askButton");
       const questionText = document.getElementById("askQuestionModal-question");
+      const tagText = document.getElementById("askQuestionModal-tag");
+      
 
       askQuestionButton.addEventListener('click', function(event) {
+        const tags = tagText.value.split(',').map(tag => tag.trim());
+
         fetch('/question/create', {
           method: 'POST',
           headers: {
@@ -155,6 +163,7 @@
           },
           body: JSON.stringify({
             title: questionText.value,
+            tags: tags
           })
         }).then(() => {
           window.location.reload();
