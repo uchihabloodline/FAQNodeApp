@@ -42,10 +42,10 @@
             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
           </div>
           <div class="modal-body">
-            <textarea class="form-control" rows="4" id="askQuestionModal-question" placeholder="add your question"></textarea>
+            <textarea class="form-control" rows="4" id="askQuestionModal-question" placeholder="add your question" required></textarea>
           </div>
           <div class="modal-body">
-            <textarea class="form-control" rows="2" id="askQuestionModal-tag" placeholder="add tags separated by comma"></textarea>
+            <textarea class="form-control" rows="2" id="askQuestionModal-tag" placeholder="add tags separated by comma" required></textarea>
           </div>
           <div class="modal-footer">
             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
@@ -74,7 +74,7 @@
     </div>
 
     <div class="d-flex mt-3">
-      <input class="form-control form-control-sm" type="search" placeholder="Search" id="searchInput">
+      <input class="form-control form-control-sm" type="search" placeholder="*Search using question title" id="searchInput">
       <button class="btn btn-outline-secondary ms-1" id="searchButton">Search</button>
     </div>
   
@@ -116,20 +116,20 @@
   <script type="text/javascript" src= "/tinymce/tinymce.min.js"></script>
   <script type="text/javascript">
     tinymce.init({
-      selector: 'textarea#answerQuestionModal-answer',
-      height: 500,
-      menubar: false,
-      mode : "specific_textareas",
-      plugins: [
-        'advlist autolink lists link image charmap print preview anchor',
-        'searchreplace visualblocks code fullscreen',
-        'insertdatetime media table paste code help wordcount'
-      ],
-      toolbar: 'undo redo | formatselect | ' +
-      'bold italic backcolor | alignleft aligncenter ' +
-      'alignright alignjustify | bullist numlist outdent indent | ' +
-      'removeformat | help'
-    });
+    selector: 'textarea#answerQuestionModal-answer',
+    height: 300,
+    menubar: false,
+    mode : "specific_textareas",
+    plugins: [
+      'advlist autolink lists link image charmap print preview anchor',
+      'searchreplace visualblocks code fullscreen',
+      'insertdatetime media table paste code help wordcount'
+    ],
+    toolbar: 'undo redo | formatselect | ' +
+    'bold italic backcolor | alignleft aligncenter ' +
+    'alignright alignjustify | bullist numlist outdent indent | ' +
+    'removeformat | help'
+  });
   </script>
 
   <script>

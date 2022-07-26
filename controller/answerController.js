@@ -10,6 +10,7 @@ module.exports.create = async function(req, res){
             question.answer = req.body.answer;
             question.save();
 
+            req.flash('success', 'Answer published!');
             console.log('success', 'Answer published!');
 
             res.status(200).json({
@@ -20,6 +21,7 @@ module.exports.create = async function(req, res){
 
         res.status(500).end();
     }catch(err){
+        req.flash('error', 'Error in publishing Answer!');
         console.log('error in answer controller', err);
         return;
     }

@@ -22,7 +22,7 @@ const questionSchema = new mongoose.Schema({
 });
 
 //questionSchema.index({'answer': 'text'});
-questionSchema.index({tags: "text", "answer": "text"});
+questionSchema.index({title: "text", "tags": "text"});
 
 const Question = mongoose.model('Question',questionSchema); 
 module.exports = Question;

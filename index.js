@@ -10,6 +10,8 @@ const db = require('./config/mongoose');
 const MongoStore = require('connect-mongo');
 const passport = require("passport");
 const passportLocal = require('./config/passport-local-strategy');
+const flash = require('connect-flash');
+const customWare = require('./config/middleware');
 // const LocalStrategy = require("passport-local");
 // const passportLocalMongoose = require("passport-local-mongoose");
 
@@ -51,6 +53,10 @@ app.use(session({
 app.use(passport.initialize());
 app.use(passport.session());
 app.use(passport.setAuthenticatedUser);
+
+//adding custom flash cards 
+app.use(flash());
+app.use(customWare.setFlash);
 
 // API
 app.use('/', require('./routes/index'));
