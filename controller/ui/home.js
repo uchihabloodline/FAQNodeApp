@@ -1,36 +1,31 @@
 const Question = require('../../models/question');
+const _ = require('lodash');
 
 module.exports.home = async function (req, res) {
     const searchText = req.query.search;
+    const tags = req.query.tags;
+
+    let findQuery = {};
+
+    if(!_.isEmpty(searchText)) {
+        findQuery = {
+            ...findQuery,
+            $text: { $search: searchText }
+        }
+    }
+
+    if(!_.isEmpty(tags)) {
+        findQuery = {
+            ...findQuery,
+            tags: { $in: _.castArray(tags) }
+        }
+    }
 
     try{
-        let questions = searchText ?
-        await Question.find({$text: {$search: searchText}}) :
-        await Question.find({});
+        let questions = await Question.find(findQuery);
 
         return res.render('faq_home', {
-            questions: questions || [
-                {
-                    title: 'Question 1',
-                    answer: 'Hello this is the answer of the question. It gives you all the information you need to answer your question. It is a bit longer that you expected. So please read it carefully.',
-                    tags: ['tag-1', 'tag-2', 'tag-3']
-                },
-                {
-                    title: 'Question 2',
-                    answer: null,
-                    tags: ['tag-1']
-                },
-                {
-                    title: 'Question 3',
-                    answer: 'Hello this is the answer of the question. It gives you all the information you need to answer your question. It is a bit longer that you expected. So please read it carefully.',
-                    tags: ['tag-1', 'tag-2']
-                },
-                {
-                    title: 'Question 4',
-                    answer: 'Hello this is the answer of the question. It gives you all the information you need to answer your question. It is a bit longer that you expected. So please read it carefully.',
-                    tags: ['tag-1', 'tag-2', 'tag-3']
-                },
-            ],
+            questions: questions,
             canAnswer: true
         });
     }catch(err){

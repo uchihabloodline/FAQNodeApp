@@ -21,7 +21,8 @@ const questionSchema = new mongoose.Schema({
     timestamps: true
 });
 
-questionSchema.index({"title": 'text', "tags": 'text'});
+//questionSchema.index({'answer': 'text'});
+questionSchema.index({tags: "text", "answer": "text"});
 
 const Question = mongoose.model('Question',questionSchema); 
 module.exports = Question;

@@ -6,8 +6,12 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-gH2yIJqKdNHPEq0n4Mqa/HGKIhSkIHeL5AyhkYV8i59U5AR6csBvApHHNl/vI1Bx" crossorigin="anonymous">
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-A3rJD856KowSb7dwlZdYEkO39Gagi7vIsF0jrRAoQmDKKtQBHUuLZ9AsSv4jD4Xa" crossorigin="anonymous"></script>
+  <script src="https://cdn.tiny.cloud/1/tftk70fc7hf51zdb1hk45zo2lfslylhqield3bfqbs76xb8u/tinymce/5/tinymce.min.js" referrerpolicy="origin"></script>
+
   <style>
-    
+    .tag:hover {
+      border: 2px solid var(--bs-blue);
+    }
   </style>
 </head>
 
@@ -24,7 +28,8 @@
           <button class="btn btn-primary m-1" id="signout-button" onclick="signout()">Sign-out</button> <br>
         <% }else{ %>
           <button class="btn btn-primary m-1" id="signin-button" onclick="signin()">Sign-In</button> <br>
-          <button class="btn btn-outline-primary btn-sm m-1" id="signup-button" onclick="signup()">Sign-Up</button>
+          <!-- enable the sign-up button to add user for testing purpose otherwise it should be commented as per usecase -->
+          <!-- <button class="btn btn-outline-primary btn-sm m-1" id="signup-button" onclick="signup()">Sign-Up</button> -->
           <%}%>
         </div>
     </div>
@@ -83,8 +88,8 @@
             </button>
             <div class="position-absolute" style="top: 50%; transform: translateY(-50%); right: 60px; z-index: 1000;">
               <% question.tags.forEach(function(tag){ %>
-                <span class="badge text-bg-info">
-                  <%=tag%> <br>
+                <span class="badge text-bg-info tag" role="button" data-list-item-tag="<%=tag%>">
+                  <%=tag%>
                 </span>
               <% }) %>
             </div>
@@ -92,7 +97,7 @@
           <div id="panelsStayOpen-collapse_<%=index%>" class="accordion-collapse collapse" aria-labelledby="panelsStayOpen-heading_<%=index%>">
             <div class="accordion-body">
               <% if(question.answer) { %>
-                <%=question.answer%>
+                <%-question.answer%>
               <% } else if(canAnswer && locals.user) { %>
                 <button type="button" class="btn btn-link" data-bs-toggle="modal" data-bs-target="#answerQuestionModal" data-answer-question-id="<%=question._id%>" data-list-item-answer-button="true">
                   Answer this question
@@ -108,6 +113,25 @@
 
   </div>
 
+  <script type="text/javascript" src= "/tinymce/tinymce.min.js"></script>
+  <script type="text/javascript">
+    tinymce.init({
+      selector: 'textarea#answerQuestionModal-answer',
+      height: 500,
+      menubar: false,
+      mode : "specific_textareas",
+      plugins: [
+        'advlist autolink lists link image charmap print preview anchor',
+        'searchreplace visualblocks code fullscreen',
+        'insertdatetime media table paste code help wordcount'
+      ],
+      toolbar: 'undo redo | formatselect | ' +
+      'bold italic backcolor | alignleft aligncenter ' +
+      'alignright alignjustify | bullist numlist outdent indent | ' +
+      'removeformat | help'
+    });
+  </script>
+
   <script>
     // Setup search box
     (function () {
@@ -122,7 +146,16 @@
       });
 
       searchButton.addEventListener('click', function(event) {
-        window.location.href = '?search=' + searchInput.value;
+        const queryString = window.location.search;
+        const urlParams = new URLSearchParams(queryString);
+
+        if (!searchInput.value) {
+          urlParams.delete('search');
+        } else {
+          urlParams.set('search', searchInput.value);
+        }
+
+        window.location.href = `?${urlParams.toString()}`;
       });
     }());
 
@@ -187,6 +220,8 @@
       });
 
       answerQuestionButton.addEventListener('click', function(event) {
+        tinymce.triggerSave(); // to update the hidden textarea value with TinyMCE
+
         fetch('/question/answer', {
           method: 'POST',
           headers: {
@@ -199,6 +234,31 @@
         }).then(() => {
           window.location.reload();
         });
+      });
+    })();
+
+
+    // setup tag click listeners
+    (function () {
+      document.addEventListener('click', function(event) {
+        if(event.target.dataset.listItemTag) {
+          const queryString = window.location.search;
+          const urlParams = new URLSearchParams(queryString);
+          const tag = event.target.dataset.listItemTag;
+
+          const existingTags = urlParams.getAll('tags');
+          const isSelected = existingTags.filter(t => t === tag).length > 0;
+
+          const newTags = isSelected ?
+            existingTags.filter(t => t !== tag) :
+            [...existingTags, tag];
+          
+          urlParams.delete('tags');
+
+          newTags.forEach(t => urlParams.append('tags', t));
+
+          window.location.href = `?${urlParams.toString()}`;
+        }
       });
     })();
   </script>

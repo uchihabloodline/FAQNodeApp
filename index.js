@@ -56,7 +56,7 @@ app.use(passport.setAuthenticatedUser);
 app.use('/', require('./routes/index'));
 
 // Server
-app.listen(port,function(err){
+app.listen(port,'127.0.0.1', function(err){
     if(err){
         console.log(`Error running the server on port ${port}`);
     }
