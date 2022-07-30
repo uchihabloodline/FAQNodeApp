@@ -4,9 +4,18 @@ const Moderator = require('../models/moderators');
 // add a answer to a question
 module.exports.create = async function(req, res){
     try{
+        if(!req.locals) {
+            console.log('logged out already ');
+            return;
+        }
+        
         let question = await Question.findById(req.body.id);
 
         if (question){
+            if(question.answer != null){
+                console.log(`Answer already submitted for the given question.`)
+                return;
+            }
             question.answer = req.body.answer;
             question.save();
 
