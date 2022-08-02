@@ -1,5 +1,8 @@
 const Question = require('../../models/question');
 const _ = require('lodash');
+const esSearch = require('../../engine/engine');
+const questionIndex = 'questions';
+const esQuestionIndexId = 'q1';
 
 module.exports.home = async function (req, res) {
     const searchText = req.query.search;
@@ -22,8 +25,8 @@ module.exports.home = async function (req, res) {
     }
 
     try{
-        let questions = await Question.find(findQuery);
-
+        let questions = searchText != null ? esSearch.searchQueries(questionIndex, searchText) : await Question.find(findQuery);
+        //let questions = await Question.find(findQuery);
         return res.render('faq_home', {
             questions: questions,
             canAnswer: true

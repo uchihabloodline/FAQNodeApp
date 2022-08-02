@@ -1,6 +1,8 @@
 const express = require('express');
 const app = express();
-const port = 8080;
+require('dotenv').config();
+const port = 8080; // process.env.PORT;
+// const host = process.env.HOST;
 const path = require('path');
 const bodyParser = require('body-parser');
 const router = express.Router();
@@ -12,10 +14,41 @@ const passport = require("passport");
 const passportLocal = require('./config/passport-local-strategy');
 const flash = require('connect-flash');
 const customWare = require('./config/middleware');
-// const LocalStrategy = require("passport-local");
-// const passportLocalMongoose = require("passport-local-mongoose");
+const { Client } = require('@elastic/elasticsearch');
+//const Engine = require('./engine/engine');
 
-// Middlewares
+
+
+//elastic search client connection.
+global.client = new Client({
+    node: 'http://localhost:9200'
+  });
+
+// async function run() {
+//     const resp = await client.index({
+//         index: 'test-index',
+//         id: '1',
+//         refresh: true,
+//         body: { foo: 'bar'}
+//     });
+//     console.log('resp-> ',resp);
+
+//     const resp2 = await client.get({
+//         index: 'test-index',
+//         id: '1'
+//     })
+
+//     console.log('resp2-> ', resp2);
+// }
+
+
+
+// run().catch(err => {
+//     console.log(err);
+//     process.exit(1);
+// });
+
+  // Middlewares
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cookieParser());
