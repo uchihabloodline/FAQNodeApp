@@ -84,14 +84,25 @@
         <div class="accordion-item border mb-2">
           <div class="accordion-header position-relative" id="panelsStayOpen-heading_<%=index%>">
             <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#panelsStayOpen-collapse_<%=index%>" aria-expanded="true" aria-controls="panelsStayOpen-collapse_<%=index%>">
-              <%=question.title%>
+              <%if(question._source) {%> 
+                <%=question._source.title%>
+              <%} else {%>
+                <%=question.title%>
+              <%}%>
             </button>
             <div class="position-absolute" style="top: 50%; transform: translateY(-50%); right: 60px; z-index: 1000;">
-              <% question.tags.forEach(function(tag){ %>
-                <span class="badge text-bg-info tag" role="button" data-list-item-tag="<%=tag%>">
-                  <%=tag%>
-                </span>
-              <% }) %>
+              <%if(question._source) { %> 
+                <% question._source.tags.forEach(function(tag){ %>
+                  <span class="badge text-bg-info tag" role="button" data-list-item-tag="<%=tag%>"></span>
+                    <%=tag%>
+                  </span>
+                <%}) } else {%>
+                  <% question.tags.forEach(function(tag){ %>
+                    <span class="badge text-bg-info tag" role="button" data-list-item-tag="<%=tag%>">
+                      <%=tag%>
+                    </span>
+                  <% }) %>
+                <% }%>
             </div>
           </div>
           <div id="panelsStayOpen-collapse_<%=index%>" class="accordion-collapse collapse" aria-labelledby="panelsStayOpen-heading_<%=index%>">

@@ -1,6 +1,5 @@
 const express = require('express');
 const app = express();
-require('dotenv').config();
 const port = 8080; // process.env.PORT;
 // const host = process.env.HOST;
 const path = require('path');
@@ -15,38 +14,17 @@ const passportLocal = require('./config/passport-local-strategy');
 const flash = require('connect-flash');
 const customWare = require('./config/middleware');
 const { Client } = require('@elastic/elasticsearch');
-//const Engine = require('./engine/engine');
+const Engine = require('./engine/engine');
 
+if (process.env.NODE_ENV != 'production') {
+    require('dotenv').config(); 
+  }
 
 
 //elastic search client connection.
 global.client = new Client({
-    node: 'http://localhost:9200'
+    node: process.env.ES_NODE_URL
   });
-
-// async function run() {
-//     const resp = await client.index({
-//         index: 'test-index',
-//         id: '1',
-//         refresh: true,
-//         body: { foo: 'bar'}
-//     });
-//     console.log('resp-> ',resp);
-
-//     const resp2 = await client.get({
-//         index: 'test-index',
-//         id: '1'
-//     })
-
-//     console.log('resp2-> ', resp2);
-// }
-
-
-
-// run().catch(err => {
-//     console.log(err);
-//     process.exit(1);
-// });
 
   // Middlewares
 app.use(bodyParser.json());
@@ -62,9 +40,9 @@ app.set('views','./views');
 
 //db connect
 app.use(session({
-    name: 'FaqApp',
+    name: process.env.SESSION_NAME,
     //TODO--> need to change secret if deployment
-    secret: 'anything',
+    secret: process.env.SECRET,
     saveUninitialized: false,
     resave: false,
     cookie: {
@@ -72,7 +50,7 @@ app.use(session({
     },
     store: MongoStore.create(  
         {   
-            mongoUrl: "mongodb://localhost/FaqApp",
+            mongoUrl: process.env.MONGO_URL,
             mongooseConnection: db,
             autoRemove: 'disabled',
 
@@ -95,9 +73,11 @@ app.use(customWare.setFlash);
 app.use('/', require('./routes/index'));
 
 // Server
-app.listen(port,'127.0.0.1', function(err){
+app.listen(process.env.PORT, process.env.HOST, function(err){
     if(err){
         console.log(`Error running the server on port ${port}`);
     }
     console.log(`Server running good on port ${port}`);
+    console.log('total no. of indices in elasticsearch');
+    Engine.indices();
 });
