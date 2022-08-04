@@ -1,7 +1,6 @@
 const Question = require('../models/question');
 const esEngine = require('../engine/engine');
 const questionIndex = 'questions';
-const esQuestionIndexId = 'q1';
 
 module.exports.create = async function(req,res){
     try{
@@ -14,7 +13,7 @@ module.exports.create = async function(req,res){
             data: question,
             message: "question created!",
         });
-        await esEngine.indexQuestionData(questionIndex, esQuestionIndexId, req);
+        await esEngine.indexQuestionData(questionIndex, question._id.toString(), req);
         req.flash('success', 'Question published!');
     }catch(err){
         req.flash('error', 'Error in publishing Question!');

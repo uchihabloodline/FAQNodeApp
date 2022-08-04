@@ -1,4 +1,5 @@
 const User = require('../models/user');
+const Moderator = require('../models/moderators');
 const path = require('path')
 const fs = require('fs');
 
@@ -12,6 +13,7 @@ module.exports.signUp = function(req,res){
 
 //sign-in
 module.exports.signIn = function(req,res){
+    //signing-In User to home page
     return res.render('user-signin',{
         title:  'FAQ Sign-In',
     });
@@ -42,11 +44,24 @@ module.exports.create = function(req,res){
         req.flash('error', 'Passwords do not match');
         return res.redirect('back');
     }
+
+    // If email does not exist in Moderator model then it should fail signup/signin.
+    Moderator.findOne({email: req.body.email}, function(err, user){
+        if(err){
+            req.flash('Email/Username does not exists for Moderator privilege');
+            console.log('Email does not exist in Moderator model');
+            return res.redirect('/');
+        }
+        if(!user){
+            console.log('Email does not exist for moderator privileges');
+            return res.redirect('back');
+        }
     
+    // After checking Moderator DB, proceed with creating user.
     User.findOne({email:req.body.email}, function(err,user){
         if(err){
             req.flash('error finding user', err);
-            console.log("Error in finding user in the DB");
+            console.log("Error in finding user in the User DB");
             return;
         }
         if(!user){
@@ -63,4 +78,5 @@ module.exports.create = function(req,res){
             return res.redirect('back');
         }
     });
+});
 };

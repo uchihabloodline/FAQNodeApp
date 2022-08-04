@@ -93,7 +93,7 @@
             <div class="position-absolute" style="top: 50%; transform: translateY(-50%); right: 60px; z-index: 1000;">
               <%if(question._source) { %> 
                 <% question._source.tags.forEach(function(tag){ %>
-                  <span class="badge text-bg-info tag" role="button" data-list-item-tag="<%=tag%>"></span>
+                  <span class="badge text-bg-info tag" role="button" data-list-item-tag="<%=tag%>">
                     <%=tag%>
                   </span>
                 <%}) } else {%>

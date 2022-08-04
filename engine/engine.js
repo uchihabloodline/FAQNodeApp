@@ -11,8 +11,8 @@ SearchEngine.search = async function search(ind, text) {
         query: {
             "multi_match" : {
                 "query":    text, 
-                "fields": [ "title", "tags" ],
-                "fuzziness": 2
+                "fields": [ "title", "tags", "answer"],
+                "fuzziness": 1
               }
         }
       }
@@ -26,10 +26,10 @@ SearchEngine.indexQuestionData = async function (_index, _id, req) {
             id: _id,
             body: req.body
             });
-        console.log('indexed question good!');
+        console.log('Successfully indexed');
         return;
         }catch(err) {
-            console.log('Error in indexing Question!', err);
+            console.log('Error in indexing Question/Answer', err);
             return;
         }
 }

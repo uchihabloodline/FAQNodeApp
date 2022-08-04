@@ -1,7 +1,6 @@
 const express = require('express');
 const app = express();
 const port = 8080; // process.env.PORT;
-// const host = process.env.HOST;
 const path = require('path');
 const bodyParser = require('body-parser');
 const router = express.Router();

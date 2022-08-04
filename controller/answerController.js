@@ -1,10 +1,12 @@
 const Question = require('../models/question');
-const Moderator = require('../models/moderators');
+const questionIndex = 'questions';
+const crypto = require("crypto");
+const esEngine = require('../engine/engine');
 
 // add a answer to a question
 module.exports.create = async function(req, res){
     try{
-        if(!req.locals) {
+        if(!req.user) {
             console.log('logged out already ');
             return;
         }
@@ -21,11 +23,11 @@ module.exports.create = async function(req, res){
 
             req.flash('success', 'Answer published!');
             console.log('success', 'Answer published!');
-
             res.status(200).json({
                 data: question,
                 message: "Answer added!"
             });
+            await esEngine.indexQuestionData(questionIndex, generateUniqueID(), req);
         }
 
         res.status(500).end();
@@ -35,3 +37,8 @@ module.exports.create = async function(req, res){
         return;
     }
 }
+
+//generating random IDs for each doc/answer in ES.
+function generateUniqueID() {
+    return crypto.randomBytes(16).toString('hex')
+  }
