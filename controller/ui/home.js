@@ -27,7 +27,7 @@ module.exports.home = async function (req, res) {
         let questions = searchText != null ? await esSearch.search(questionIndex, searchText) : await Question.find(findQuery);
         if(!_.isEmpty(searchText) && questions.body.hits.hits){
             return res.render('faq_home', {
-                questions: questions.body.hits.hits.map(q => ({...q._source, _id: q.id})),
+                questions: questions.body.hits.hits.map(q => ({...q._source, _id: q._id})),
                 canAnswer: true,
             });
         }
