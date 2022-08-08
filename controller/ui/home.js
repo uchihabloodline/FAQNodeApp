@@ -25,10 +25,10 @@ module.exports.home = async function (req, res) {
 
     try{
         let questions = searchText != null ? await esSearch.search(questionIndex, searchText) : await Question.find(findQuery);
-        if(!_.isEmpty(searchText) && questions.hits.hits){
+        if(!_.isEmpty(searchText) && questions.body.hits.hits){
             return res.render('faq_home', {
-                questions: questions.hits.hits ,
-                canAnswer: true
+                questions: questions.body.hits.hits.map(q => ({...q._source, _id: q.id})),
+                canAnswer: true,
             });
         }
         return res.render('faq_home', {
@@ -36,7 +36,7 @@ module.exports.home = async function (req, res) {
             canAnswer: true
         });
     }catch(err){
-        console.log("ERROR in question Controller ",err);
+        logger.error({message: `Error in question Controller! Error: ${JSON.stringify(err)}`});
         return res.redirect('back');
     }
 }

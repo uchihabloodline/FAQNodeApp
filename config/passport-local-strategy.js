@@ -11,11 +11,11 @@ passport.use(new LocalStrategy({
         function(req,email,password,done){
             User.findOne({email:email},function(err,user){
                 if(err){
-                    console.log('error in passport find user',err);
+                    logger.error({message: 'error in passport find user. '+'Error: '+JSON.stringify(err)});
                     return done(err);
                 }
                 if(!user || user.password != password){
-                    console.log('error','Invalid Username/Password');
+                    logger.error({message: `Error: Invalid Username/Password`});
                     return done(null,false);
                 }
 
@@ -33,7 +33,7 @@ passport.serializeUser(function(user, done){
 passport.deserializeUser(function(id,done){
     User.findById(id, function(err,user){
         if(err){
-            console.log("error in finding the user!!");
+            logger.error({message: "error in finding the user!!"});
             return done(err);
         }
         return done(null,user);
@@ -54,6 +54,7 @@ passport.checkAuthentication = function(req, res, next){
 passport.setAuthenticatedUser = function(req, res, next){
     if (req.isAuthenticated()){
         // req.user contains the current signed in user from the session cookie and we are just sending this to the locals for the views
+        console.log('pass- ', req.user);
         res.locals.user = req.user;
     }
 

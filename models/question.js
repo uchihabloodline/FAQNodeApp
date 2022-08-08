@@ -5,11 +5,15 @@ const questionSchema = new mongoose.Schema({
         type: String,
         require: true,
     },
-    tags: [
+    tags: {
+        type: [
         {
             type: String,
+            require: true,
         }
     ],
+    'default': []
+},
     user: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'User'

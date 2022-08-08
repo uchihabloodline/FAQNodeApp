@@ -1,12 +1,13 @@
 const express = require('express');
 const app = express();
 const port = 8080; // process.env.PORT;
+global.config = require('./config/config');
 const path = require('path');
 const bodyParser = require('body-parser');
-const router = express.Router();
 const session = require('express-session');
 const cookieParser = require('cookie-parser');
 const db = require('./config/mongoose');
+global.logger = require('./config/logger');
 const MongoStore = require('connect-mongo');
 const passport = require("passport");
 const passportLocal = require('./config/passport-local-strategy');
@@ -14,6 +15,7 @@ const flash = require('connect-flash');
 const customWare = require('./config/middleware');
 const { Client } = require('@elastic/elasticsearch');
 const Engine = require('./engine/engine');
+const { config } = require('dotenv');
 
 if (process.env.NODE_ENV != 'production') {
     require('dotenv').config(); 
@@ -25,7 +27,7 @@ global.client = new Client({
     node: process.env.ES_NODE_URL
   });
 
-  // Middlewares
+// Middlewares
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cookieParser());
@@ -45,13 +47,13 @@ app.use(session({
     saveUninitialized: false,
     resave: false,
     cookie: {
-        maxAge: (1000*60*100)
+        maxAge: config.maxCookieAge
     },
     store: MongoStore.create(  
         {   
             mongoUrl: process.env.MONGO_URL,
             mongooseConnection: db,
-            autoRemove: 'disabled',
+            autoRemove: config.MongoStore_disabled,
 
         },
         function(err){
@@ -72,11 +74,13 @@ app.use(customWare.setFlash);
 app.use('/', require('./routes/index'));
 
 // Server
-app.listen(process.env.PORT, process.env.HOST, function(err){
+app.listen(process.env.PORT, process.env.HOST, async function(err){
     if(err){
         console.log(`Error running the server on port ${port}`);
     }
     console.log(`Server running good on port ${port}`);
     console.log('total no. of indices in elasticsearch');
-    Engine.indices();
+    logger.debug({message: 'total no. of indices in elasticsearch'});
+    logger.debug({message:  `${await Engine.indices()}`});
+    await Engine.indices();
 });
