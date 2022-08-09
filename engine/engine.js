@@ -21,6 +21,11 @@ SearchEngine.search = async function search(ind, text) {
     });
   }
 
+  /**
+ * @param  {[indexName, documentId, request]}
+ * @return {[{promise}]}
+ */
+//index each question added to elasticsearch indexes.
 SearchEngine.indexQuestionData = async function (_index, _id, req) {
     try{
         await global.client.index({
@@ -35,7 +40,13 @@ SearchEngine.indexQuestionData = async function (_index, _id, req) {
             return;
         }
 }
+,
+/**
+ * @param  {[indexName, documentId, request]}
+ * @return {[{promise}]}
+ */
 
+//elasticsearch Update API to update existing docs with matching _id's.
 SearchEngine.addAnswerToQuestion = async function (_index, _id, req) {
   try{
     await client.update({
@@ -58,6 +69,7 @@ SearchEngine.addAnswerToQuestion = async function (_index, _id, req) {
   }
 }
 
+// Get all the indices present in elasticsearch.
 SearchEngine.indices = function(){
   return global.client.cat.indices({v: true})
   .then(console.log)
