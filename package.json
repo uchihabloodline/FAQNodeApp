@@ -11,6 +11,7 @@
   "license": "ISC",
   "dependencies": {
     "@elastic/elasticsearch": "^7.14.0",
+    "body-parser": "^1.20.0",
     "connect-flash": "^0.1.1",
     "connect-mongo": "^4.6.0",
     "cookie-parser": "^1.4.6",
@@ -25,6 +26,7 @@
     "lodash": "^4.17.21",
     "log4js": "^6.6.1",
     "moment": "^2.29.4",
+    "mongodb": "^4.8.1",
     "mongoose": "^6.4.5",
     "nodemon": "^2.0.19",
     "noty": "^3.2.0-beta-deprecated",
@@ -33,6 +35,12 @@
     "passport-local-mongoose": "^7.1.2",
     "path": "^0.12.7",
     "stack-trace": "^0.0.10",
-    "tinymce": "^6.1.0"
+    "tinymce": "^6.1.0",
+    "update": "^0.7.4"
+  },
+  "devDependencies": {
+    "eslint": "^8.21.0",
+    "eslint-config-airbnb-base": "^15.0.0",
+    "eslint-plugin-import": "^2.26.0"
   }
 }
