@@ -87,3 +87,5 @@ app.listen(process.env.PORT, process.env.HOST, async (err) => {
   logger.debug({ message: `${await Engine.indices()}` });
   await Engine.indices();
 });
+
+module.exports = app.listen(process.env.PORT);

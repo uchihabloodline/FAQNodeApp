@@ -13,6 +13,7 @@ module.exports = function (log4js, category) {
       appenders: {
         category: {
           type: 'dateFile',
+          // eslint-disable-next-line no-useless-concat
           filename: `${loggerPath}/` + 'FaqApp.log',
           pattern: 'dd-MM-yyyy-hh',
           alwaysIncludePattern: true,
