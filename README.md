@@ -11,7 +11,7 @@ MUST HAVE:
 2. Do a `npm install` from the root directory of your project.
 
 
-NOTE: Create a .env file to add all the required setup in it.
+NOTE: Create a .env file in the root to add all the required setup in it.
 
 Now Wait, this project uses elasticsearch hence either you should have it locally running or just connect to the PayU Elasticsearch address. But for that you should have access to it and even before know it as its
 mentioned in the .env file which is now not present in the project files. :)
