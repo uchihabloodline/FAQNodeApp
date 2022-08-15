@@ -18,9 +18,20 @@ mentioned in the .env file which is now not present in the project files. :)
 
 // things to do for Elasticsearch(ELASTICSEARCH, remember ES from now)
 
-    --> If you have access to the PayU ES, add that in your .env file and its good to go.
+    --> If you have access to the PayU ES, add the address in your .env in respective ES_PAYU_URL variable and its good to go.
 
-    --> If you dont, download ES in your local and add the address(which is mostly gonna be localhost:9200) in your .env file.
+    --> If you dont, download ES in your local and add the address(which is mostly gonna be localhost:9200) in your .env file wrt ES_NODE_URL.
+
+
+Add these as well in your .env file with respected values:
+
+    NODE_ENV
+    PORT
+    SESSION_NAME
+    SECRET
+    MONGO_URL
+    HOST
+
 
 if you face linting issues, turn it off or correct it in your editor. :)
 
