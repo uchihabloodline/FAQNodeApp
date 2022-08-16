@@ -26,7 +26,7 @@ if (process.env.NODE_ENV != 'production') {
 
 // elastic search client connection.
 global.client = new Client({
-  node: process.env.ES_NODE_URL,
+  node: process.env.PAYU_ES_URL,
 });
 
 // Middlewares
