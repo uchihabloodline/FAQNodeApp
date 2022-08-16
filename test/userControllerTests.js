@@ -22,14 +22,14 @@ describe('testing user controller ', async function(done) {
     // Or just use a different port. 
     let authenticatedUser = request.agent(app);
 
-    before('it should not create a session and return 302', function(done){
+    before('--> it should not create a session and return 302', function(done){
         authenticatedUser
-          .post('/user/create-session')
-          .send(userCredentials)
-          .end(function(err, response){
-            expect(response.statusCode).to.equal(302);
-            expect('Location', '/');
-            done();
+            .post('/user/create-session')
+            .send(userCredentials)
+            .end(function(err, response){
+                expect(response.statusCode).to.equal(302);
+                expect('Location', '/');
+                done();
           });
       });
 
@@ -54,7 +54,7 @@ describe('testing user controller ', async function(done) {
         done();
     });
 
-    it('2. should sign-in user with registered moderator email', async function(done) {
+    it('2. check sign-in user API with registered moderator email', async function(done) {
         let req = {
             'user': {
                 'email': 'foo@bar.com',
@@ -75,6 +75,56 @@ describe('testing user controller ', async function(done) {
         done();
     });
 
+    describe('test suite for user sign-up API', async function(done) {
+        let req = {
+            'body': {
+                'email': 'foo@bar.com',
+                'password': 'foo',
+                'confirm_password': 'foo'
+            }
+        }
+
+        it('1. should check for unmatching passwords', async function(done) {
+            let req = {
+                'body': {
+                    'email': 'shivam.pandey@payu.in',
+                    'password': 'foo',
+                    'confirm_password': 'bar'
+                }
+            }
     
+            userController.create(req, res)
+            .then(() => {
+                expect(res.sendCalledWith.message).to.equal('password do not match');
+            }, (res) => {
+                console.log('cannot do create user API controller failure TEST. '+res)
+            }).catch((err) => {
+                console.log('Error in create API of userController. '+err);
+            });
+            done();
+        });
+
+        it('2. should check for unmatching passwords', async function(done) {
+            let req = {
+                'body': {
+                    'email': 'does.not.exist@moderator',
+                    'password': 'foo',
+                    'confirm_password': 'foo'
+                }
+            }
+    
+            userController.create(req, res)
+            .then(() => {
+                expect(res.sendCalledWith.message).to.equal('Email does not exist in Moderator model');
+            }, (res) => {
+                console.log('cannot do create user API controller Moderator check TEST. '+res)
+            }).catch((err) => {
+                console.log('Error in create API of userController. '+err);
+            });
+            done();
+        });
+    })
+
+
 });
 

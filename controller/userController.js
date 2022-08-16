@@ -15,7 +15,7 @@ module.exports.signUp = function (req, res) {
 };
 
 // sign-in
-module.exports.signIn = function (req, res) {
+module.exports.signIn = async function (req, res) {
   // check for override login activity.
   if (!_.isEmpty(req.user)) {
     // eslint-disable-next-line eqeqeq
@@ -23,12 +23,16 @@ module.exports.signIn = function (req, res) {
       req.flash('error', 'Already logged in with another session');
       // eslint-disable-next-line no-undef
       logger.warn({ message: `user with email: ${req.user.email} already logged in.` });
-      return res.redirect('/');
+      return await res.status(200).json({
+        message: 'Another session in progress',
+        failureRedirect: res.redirect('/')
+      });
     }
   }
   // signing-In User to home page
-  return res.render('user-signin', {
+  return await res.render('user-signin', {
     title: 'FAQ Sign-In',
+    message: 'sign-in execution successful'
   });
 };
 
@@ -61,31 +65,37 @@ module.exports.destroySession = function (req, res) {
 
 // For Sign-Up user
 // eslint-disable-next-line func-names
-module.exports.create = function (req, res) {
+module.exports.create = async function (req, res) {
   // eslint-disable-next-line eqeqeq
   if (req.body.password != req.body.confirm_password) {
     console.log('password mismatch');
     // eslint-disable-next-line no-undef
     logger.error({ meesage: 'User passoword mis-match during user creation.' });
     req.flash('error', 'Passwords do not match');
-    return res.redirect('back');
+    return await res.status(200).json({
+      message: 'password do not match',
+      failureRedirect: res.redirect('back')
+    });
   }
 
   // If email does not exist in Moderator model then it should fail signup/signin.
-  Moderator.findOne({ email: req.body.email }, (err, user) => {
+  Moderator.findOne({ email: req.body.email }, async (err, user) => {
     if (err) {
       req.flash('error', 'Error occured with system. Please try again.');
       // eslint-disable-next-line no-undef
       logger.error({ meesage: `Error in finding user in Moderator model. Error: ${JSON.stringify(err)}` });
       console.log('Error in finding user in Moderator model');
-      return res.redirect('/');
+      return await res.redirect('/');
     }
     if (!user) {
       req.flash('error', 'Email/Username does not exists for Moderator privilege');
       console.log('Email does not exist for moderator privileges');
       // eslint-disable-next-line no-undef
       logger.error({ meesage: 'Email does not exist for moderator privileges' });
-      return res.redirect('back');
+      return await res.status(200).json({
+        message: 'Email does not exist in Moderator model',
+        failureRedirect: res.redirect('back')
+      });
     }
 
     // After checking Moderator DB, proceed with creating user.
